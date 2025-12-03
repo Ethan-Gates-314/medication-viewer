@@ -244,17 +244,86 @@ export const SearchFilters = observer(function SearchFilters() {
         </div>
       </div>
 
-      {/* Results Count */}
-      <div className="text-sm text-surface-500">
-        Showing{' '}
-        <span className="font-medium text-surface-700">
-          {store.sortedMedications.length.toLocaleString()}
-        </span>{' '}
-        medications on this page
-        {store.totalCount > 0 && (
-          <span>
-            {' '}(page {store.currentPage} of {store.totalPages}, {store.totalCount.toLocaleString()} total)
-          </span>
+      {/* Results Count & Load All */}
+      <div className="flex items-center justify-between">
+        <div className="text-sm text-surface-500">
+          {store.allMedicationsLoaded ? (
+            // When all medications are loaded
+            store.sortedMedications.length === store.medications.length ? (
+              <>
+                Showing{' '}
+                <span className="font-medium text-surface-700">
+                  {store.sortedMedications.length.toLocaleString()}
+                </span>{' '}
+                medications
+                <span className="text-emerald-600 font-medium"> (all loaded)</span>
+              </>
+            ) : (
+              <>
+                Found{' '}
+                <span className="font-medium text-surface-700">
+                  {store.sortedMedications.length.toLocaleString()}
+                </span>{' '}
+                of{' '}
+                <span className="font-medium text-surface-700">
+                  {store.medications.length.toLocaleString()}
+                </span>{' '}
+                medications
+                <span className="text-emerald-600 font-medium"> (searching all)</span>
+              </>
+            )
+          ) : (
+            // Paginated mode
+            <>
+              Showing{' '}
+              <span className="font-medium text-surface-700">
+                {store.sortedMedications.length.toLocaleString()}
+              </span>{' '}
+              medications
+              {store.totalCount > 0 && (
+                <span>
+                  {' '}(page {store.currentPage} of {store.totalPages}, {store.totalCount.toLocaleString()} total)
+                </span>
+              )}
+            </>
+          )}
+        </div>
+        
+        {/* Load All Button */}
+        {!store.allMedicationsLoaded && (
+          <button
+            onClick={() => store.loadAllMedications()}
+            disabled={store.isLoadingAll || store.isLoading}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all
+              ${
+                store.isLoadingAll
+                  ? 'bg-primary-100 text-primary-600 cursor-wait'
+                  : 'bg-primary-500 text-white hover:bg-primary-600 shadow-sm hover:shadow'
+              }
+              disabled:opacity-60 disabled:cursor-not-allowed
+            `}
+          >
+            {store.isLoadingAll ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>
+                  Loading... {store.loadingProgress.toLocaleString()}
+                  {store.totalCount > 0 && ` / ${store.totalCount.toLocaleString()}`}
+                </span>
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                <span>Load All Medications</span>
+              </>
+            )}
+          </button>
         )}
       </div>
     </div>

@@ -4,7 +4,7 @@
  */
 
 import { makeAutoObservable, runInAction } from 'mobx'
-import { fetchMedicationsPage, getMedicationCount, type PaginatedResult } from '../data/firestoreApi'
+import { fetchMedicationsPage, fetchAllMedications, getMedicationCount, type PaginatedResult } from '../data/firestoreApi'
 import { initAuth, isFirebaseConfigured } from '../data/firebase'
 import { cleanMedicationName } from '../utils/formatters'
 import type {
@@ -25,6 +25,11 @@ class MedicationViewerStore {
   error: string | null = null
   totalCount = 0
   isAuthenticated = false
+  
+  // Load all state
+  isLoadingAll = false
+  loadingProgress = 0
+  allMedicationsLoaded = false
 
   // Pagination state
   currentPage = 1
@@ -332,7 +337,47 @@ class MedicationViewerStore {
    */
   async refresh(): Promise<void> {
     this.lastDocuments.clear()
+    this.allMedicationsLoaded = false
     await this.loadPage(1)
+  }
+
+  /**
+   * Load all medications at once
+   */
+  async loadAllMedications(): Promise<void> {
+    if (this.isLoadingAll || this.isLoading) return
+
+    runInAction(() => {
+      this.isLoadingAll = true
+      this.loadingProgress = 0
+      this.error = null
+    })
+
+    try {
+      const allMeds = await fetchAllMedications((loaded, total) => {
+        runInAction(() => {
+          this.loadingProgress = loaded
+          if (total !== null) {
+            this.totalCount = total
+          }
+        })
+      })
+
+      runInAction(() => {
+        this.medications = allMeds
+        this.totalCount = allMeds.length
+        this.allMedicationsLoaded = true
+        this.isLoadingAll = false
+        this.currentPage = 1
+        this.hasMore = false
+      })
+    } catch (err) {
+      runInAction(() => {
+        this.error =
+          err instanceof Error ? err.message : 'Failed to load all medications'
+        this.isLoadingAll = false
+      })
+    }
   }
 
   /**

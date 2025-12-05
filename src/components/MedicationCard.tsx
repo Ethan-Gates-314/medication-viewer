@@ -131,6 +131,25 @@ export const MedicationCard = observer(function MedicationCard({
           </span>
         </div>
       )}
+
+      {/* ATC Codes (if available) */}
+      {medication.classification.atc_codes.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {medication.classification.atc_codes.slice(0, 3).map((code) => (
+            <span
+              key={code}
+              className="text-[10px] font-mono px-1.5 py-0.5 bg-primary-50 text-primary-600 rounded"
+            >
+              {code}
+            </span>
+          ))}
+          {medication.classification.atc_codes.length > 3 && (
+            <span className="text-[10px] text-surface-400">
+              +{medication.classification.atc_codes.length - 3}
+            </span>
+          )}
+        </div>
+      )}
     </div>
   )
 })

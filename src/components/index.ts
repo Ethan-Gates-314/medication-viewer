@@ -10,4 +10,5 @@ export { MedicationCard } from './MedicationCard'
 export { MedicationDetailModal } from './MedicationDetailModal'
 export { DataSourceBadge } from './DataSourceBadge'
 export { JsonViewer } from './JsonViewer'
+export { TestPanel } from './TestPanel'
 

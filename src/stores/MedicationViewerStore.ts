@@ -53,6 +53,9 @@ class MedicationViewerStore {
   viewMode: 'cards' | 'table' = 'cards'
   selectedMedication: MedicationDocument | null = null
   isDetailModalOpen = false
+  
+  // Tab state
+  activeTab: 'database' | 'tests' = 'database'
 
   constructor() {
     makeAutoObservable(this)
@@ -479,6 +482,13 @@ class MedicationViewerStore {
    */
   clearError(): void {
     this.error = null
+  }
+
+  /**
+   * Set active tab
+   */
+  setActiveTab(tab: 'database' | 'tests'): void {
+    this.activeTab = tab
   }
 }
 

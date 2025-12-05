@@ -10,6 +10,7 @@ import {
   orderBy,
   limit,
   startAfter,
+  where,
   getCountFromServer,
   type QueryDocumentSnapshot,
   type DocumentData,
@@ -118,4 +119,27 @@ export async function fetchAllMedications(
   }
 
   return medications
+}
+
+/**
+ * Fetch a single medication by RxCUI
+ * @param rxcui - The RxCUI identifier to look up
+ * @returns The medication document or null if not found
+ */
+export async function fetchMedicationByRxcui(
+  rxcui: string
+): Promise<MedicationDocument | null> {
+  const q = query(
+    collection(db, MEDICATIONS_COLLECTION),
+    where('rxcui', '==', rxcui),
+    limit(1)
+  )
+
+  const snapshot = await getDocs(q)
+  
+  if (snapshot.empty) {
+    return null
+  }
+
+  return snapshot.docs[0].data() as MedicationDocument
 }

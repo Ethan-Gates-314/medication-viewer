@@ -12,6 +12,7 @@ import {
   SearchFilters,
   MedicationGrid,
   MedicationDetailModal,
+  TestPanel,
 } from './components'
 import './App.css'
 
@@ -25,19 +26,25 @@ const App = observer(function App() {
 
   return (
     <Layout>
-      <div className="space-y-6">
-        {/* Stats Panel */}
-        <StatsPanel />
+      {store.activeTab === 'database' ? (
+        <>
+          <div className="space-y-6">
+            {/* Stats Panel */}
+            <StatsPanel />
 
-        {/* Search & Filters */}
-        <SearchFilters />
+            {/* Search & Filters */}
+            <SearchFilters />
 
-        {/* Medication Grid/Table */}
-        <MedicationGrid />
-      </div>
+            {/* Medication Grid/Table */}
+            <MedicationGrid />
+          </div>
 
-      {/* Detail Modal */}
-      <MedicationDetailModal />
+          {/* Detail Modal */}
+          <MedicationDetailModal />
+        </>
+      ) : (
+        <TestPanel />
+      )}
     </Layout>
   )
 })

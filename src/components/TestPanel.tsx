@@ -1050,6 +1050,511 @@ const atcTests: TestCase<AtcExpected>[] = [
       return { passed: details.every((d) => d.passed), details }
     },
   },
+  {
+    id: 'atc-9',
+    rxcui: '617312',
+    name: 'Atorvastatin Calcium 10 MG Oral Tablet',
+    description: 'Atorvastatin (statin) should have ATC code C10AA05 - corrected RxCUI from resolver',
+    expected: {
+      atc_codes: ['C10AA05'],
+    },
+    validate: (actual, expected) => {
+      const hasExpectedAtc = expected.atc_codes.every((code) =>
+        actual.classification.atc_codes.includes(code)
+      )
+      const details = [
+        {
+          field: 'atc_codes',
+          expected: expected.atc_codes.join(', '),
+          actual: actual.classification.atc_codes.join(', ') || 'none',
+          passed: hasExpectedAtc,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'atc-10',
+    rxcui: '312615',
+    name: 'Prednisone 20 MG Oral Tablet',
+    description: 'Prednisone (corticosteroid) should have ATC code H02AB07',
+    expected: {
+      atc_codes: ['H02AB07'],
+    },
+    validate: (actual, expected) => {
+      const hasExpectedAtc = expected.atc_codes.every((code) =>
+        actual.classification.atc_codes.includes(code)
+      )
+      const details = [
+        {
+          field: 'atc_codes',
+          expected: expected.atc_codes.join(', '),
+          actual: actual.classification.atc_codes.join(', ') || 'none',
+          passed: hasExpectedAtc,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'atc-11',
+    rxcui: '198083',
+    name: 'Phenobarbital 100 MG Oral Tablet',
+    description: 'Phenobarbital (barbiturate) should have ATC code N03AA02',
+    expected: {
+      atc_codes: ['N03AA02'],
+    },
+    validate: (actual, expected) => {
+      const hasExpectedAtc = expected.atc_codes.every((code) =>
+        actual.classification.atc_codes.includes(code)
+      )
+      const details = [
+        {
+          field: 'atc_codes',
+          expected: expected.atc_codes.join(', '),
+          actual: actual.classification.atc_codes.join(', ') || 'none',
+          passed: hasExpectedAtc,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'atc-12',
+    rxcui: '197361',
+    name: 'Amlodipine 5 MG Oral Tablet',
+    description: 'Amlodipine (calcium channel blocker) should have ATC code C08CA01',
+    expected: {
+      atc_codes: ['C08CA01'],
+    },
+    validate: (actual, expected) => {
+      const hasExpectedAtc = expected.atc_codes.every((code) =>
+        actual.classification.atc_codes.includes(code)
+      )
+      const details = [
+        {
+          field: 'atc_codes',
+          expected: expected.atc_codes.join(', '),
+          actual: actual.classification.atc_codes.join(', ') || 'none',
+          passed: hasExpectedAtc,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+]
+
+// ============ SAFETY & BLACK BOX WARNING TESTS ============
+
+interface SafetyExpected {
+  has_black_box_warning: boolean
+  is_controlled_substance: boolean
+  controlled_substance_schedule?: string | null
+}
+
+const safetyTests: TestCase<SafetyExpected>[] = [
+  {
+    id: 'safety-1',
+    rxcui: '197591',
+    name: 'Diazepam 5 MG Oral Tablet',
+    description: 'Diazepam is a controlled substance (CIV) with FDA black box warning (opioid interaction, abuse, dependence)',
+    expected: {
+      has_black_box_warning: true,
+      is_controlled_substance: true,
+      controlled_substance_schedule: 'CIV',
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'safety-2',
+    rxcui: '198083',
+    name: 'Phenobarbital 100 MG Oral Tablet',
+    description: 'Phenobarbital is a controlled substance (CIV) - barbiturate',
+    expected: {
+      has_black_box_warning: false,
+      is_controlled_substance: true,
+      controlled_substance_schedule: 'CIV',
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'safety-3',
+    rxcui: '861007',
+    name: 'Metformin Hydrochloride 500 MG Oral Tablet',
+    description: 'Metformin has a black box warning (lactic acidosis)',
+    expected: {
+      has_black_box_warning: true,
+      is_controlled_substance: false,
+      controlled_substance_schedule: null,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'safety-4',
+    rxcui: '198440',
+    name: 'Acetaminophen 500 MG Oral Tablet',
+    description: 'Acetaminophen - NOT controlled, has black box (inherited from opioid combination products)',
+    expected: {
+      has_black_box_warning: true,
+      is_controlled_substance: false,
+      controlled_substance_schedule: null,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'safety-5',
+    rxcui: '310965',
+    name: 'Ibuprofen 200 MG Oral Tablet',
+    description: 'Ibuprofen - NOT controlled, may have cardiovascular black box',
+    expected: {
+      has_black_box_warning: true,
+      is_controlled_substance: false,
+      controlled_substance_schedule: null,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'safety-6',
+    rxcui: '197361',
+    name: 'Amlodipine 5 MG Oral Tablet',
+    description: 'Amlodipine - NOT controlled, no black box warning',
+    expected: {
+      has_black_box_warning: false,
+      is_controlled_substance: false,
+      controlled_substance_schedule: null,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: SafetyExpected }).safety
+      const details = [
+        {
+          field: 'has_black_box_warning',
+          expected: String(expected.has_black_box_warning),
+          actual: String(safety?.has_black_box_warning ?? 'undefined'),
+          passed: safety?.has_black_box_warning === expected.has_black_box_warning,
+        },
+        {
+          field: 'is_controlled_substance',
+          expected: String(expected.is_controlled_substance),
+          actual: String(safety?.is_controlled_substance ?? 'undefined'),
+          passed: safety?.is_controlled_substance === expected.is_controlled_substance,
+        },
+        {
+          field: 'controlled_substance_schedule',
+          expected: expected.controlled_substance_schedule ?? 'null',
+          actual: safety?.controlled_substance_schedule ?? 'null',
+          passed: safety?.controlled_substance_schedule === expected.controlled_substance_schedule,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+]
+
+// ============ PIM (POTENTIALLY INAPPROPRIATE MEDICATION) TESTS ============
+
+interface PimExpected {
+  is_pim: boolean
+  pim_source_version?: string | null
+}
+
+const pimTests: TestCase<PimExpected>[] = [
+  {
+    id: 'pim-1',
+    rxcui: '197591',
+    name: 'Diazepam 5 MG Oral Tablet',
+    description: 'Diazepam is on Beers Criteria - avoid in elderly (fall risk)',
+    expected: {
+      is_pim: true,
+      pim_source_version: 'beers-2023-v1',
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+        {
+          field: 'pim_source_version',
+          expected: expected.pim_source_version ?? 'null',
+          actual: safety?.pim_source_version ?? 'null',
+          passed: expected.pim_source_version ? safety?.pim_source_version === expected.pim_source_version : true,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-2',
+    rxcui: '198083',
+    name: 'Phenobarbital 100 MG Oral Tablet',
+    description: 'Phenobarbital is on Beers Criteria - high rate of dependence',
+    expected: {
+      is_pim: true,
+      pim_source_version: 'beers-2023-v1',
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+        {
+          field: 'pim_source_version',
+          expected: expected.pim_source_version ?? 'null',
+          actual: safety?.pim_source_version ?? 'null',
+          passed: expected.pim_source_version ? safety?.pim_source_version === expected.pim_source_version : true,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-3',
+    rxcui: '198440',
+    name: 'Acetaminophen 500 MG Oral Tablet',
+    description: 'Acetaminophen is NOT on Beers Criteria',
+    expected: {
+      is_pim: false,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-4',
+    rxcui: '861007',
+    name: 'Metformin Hydrochloride 500 MG Oral Tablet',
+    description: 'Metformin is NOT on Beers Criteria',
+    expected: {
+      is_pim: false,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-5',
+    rxcui: '314076',
+    name: 'Lisinopril 10 MG Oral Tablet',
+    description: 'Lisinopril (ACE inhibitor) is NOT on Beers Criteria',
+    expected: {
+      is_pim: false,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-6',
+    rxcui: '197361',
+    name: 'Amlodipine 5 MG Oral Tablet',
+    description: 'Amlodipine is NOT on Beers Criteria',
+    expected: {
+      is_pim: false,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-7',
+    rxcui: '198051',
+    name: 'Omeprazole 20 MG Delayed Release Oral Capsule',
+    description: 'Omeprazole (PPI) may be on Beers Criteria (long-term use)',
+    expected: {
+      is_pim: true,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
+  {
+    id: 'pim-8',
+    rxcui: '310965',
+    name: 'Ibuprofen 200 MG Oral Tablet',
+    description: 'Ibuprofen (NSAID) is on Beers Criteria - GI/renal/CV risk',
+    expected: {
+      is_pim: true,
+    },
+    validate: (actual, expected) => {
+      const safety = (actual as MedicationDocument & { safety?: { is_pim: boolean; pim_source_version: string | null } }).safety
+      const details = [
+        {
+          field: 'is_pim',
+          expected: String(expected.is_pim),
+          actual: String(safety?.is_pim ?? 'undefined'),
+          passed: safety?.is_pim === expected.is_pim,
+        },
+      ]
+      return { passed: details.every((d) => d.passed), details }
+    },
+  },
 ]
 
 // ============ TEST SECTION COMPONENT ============
@@ -1270,11 +1775,15 @@ export const TestPanel = observer(function TestPanel() {
   const [pricingResults, setPricingResults] = useState<Map<string, TestResult>>(new Map())
   const [rxnormResults, setRxnormResults] = useState<Map<string, TestResult>>(new Map())
   const [atcResults, setAtcResults] = useState<Map<string, TestResult>>(new Map())
+  const [safetyResults, setSafetyResults] = useState<Map<string, TestResult>>(new Map())
+  const [pimResults, setPimResults] = useState<Map<string, TestResult>>(new Map())
 
   const [isRunningConversion, setIsRunningConversion] = useState(false)
   const [isRunningPricing, setIsRunningPricing] = useState(false)
   const [isRunningRxnorm, setIsRunningRxnorm] = useState(false)
   const [isRunningAtc, setIsRunningAtc] = useState(false)
+  const [isRunningSafety, setIsRunningSafety] = useState(false)
+  const [isRunningPim, setIsRunningPim] = useState(false)
   const [isRunningAll, setIsRunningAll] = useState(false)
   
   // Custom tests state
@@ -1291,18 +1800,13 @@ export const TestPanel = observer(function TestPanel() {
     setResults: React.Dispatch<React.SetStateAction<Map<string, TestResult>>>
   ) => {
     setResults((prev) => new Map(prev).set(test.id, { status: 'running' }))
-    
-    console.group(`🧪 Test: ${test.name} (RxCUI: ${test.rxcui})`)
-    console.log('Description:', test.description)
-    console.log('Expected:', test.expected)
 
     try {
       const medication = await fetchMedicationByRxcui(test.rxcui)
 
       if (!medication) {
         const errorMsg = `Medication with RxCUI ${test.rxcui} not found in database`
-        console.error('❌ ERROR:', errorMsg)
-        console.groupEnd()
+        console.error(`❌ ERROR: ${test.name} (${test.rxcui}) - ${errorMsg}`)
         setResults((prev) =>
           new Map(prev).set(test.id, {
             status: 'error',
@@ -1312,36 +1816,35 @@ export const TestPanel = observer(function TestPanel() {
         return
       }
 
-      // Instead of logging the whole object as-is, expand its key/value pairs one-per-line
-      console.log('Actual medication data:')
-      Object.entries(medication).forEach(([key, value]) => {
-        console.log(`  ${key}:`, JSON.stringify(value, null, 2))
-      })
-
       const validation = test.validate(medication, test.expected)
       
-      // Log detailed validation results, one detail per line for easy visibility.
-      console.log('')
-      console.log('📋 Validation Results:')
-      validation.details.forEach((detail) => {
-        const icon = detail.passed ? '✅' : '❌'
-        console.log(
-          `  ${icon} ${detail.field}: Expected: ${JSON.stringify(detail.expected)} | Actual: ${JSON.stringify(detail.actual)} | ${detail.passed ? 'PASS' : 'FAIL'}`
-        )
-      })
-      console.log('')
-      
       if (validation.passed) {
-        console.log('✅ TEST PASSED')
+        // Simple one-line log for passing tests
+        console.log(`✅ PASS: ${test.name} (${test.rxcui})`)
       } else {
-        console.warn('❌ TEST FAILED')
-        validation.details.forEach((d) =>
+        // Detailed output for failed tests
+        console.group(`❌ FAIL: ${test.name} (RxCUI: ${test.rxcui})`)
+        console.log('Description:', test.description)
+        console.log('Expected:', test.expected)
+        console.log('')
+        console.log('📋 Validation Details:')
+        validation.details.forEach((detail) => {
+          const icon = detail.passed ? '✅' : '❌'
           console.log(
-            `* ${d.field}: Expected: ${JSON.stringify(d.expected)} | Actual: ${JSON.stringify(d.actual)} | Status: ${d.passed ? 'PASS' : 'FAIL'}`
+            `  ${icon} ${detail.field}: Expected: ${JSON.stringify(detail.expected)} | Actual: ${JSON.stringify(detail.actual)}`
           )
-        )
+        })
+        console.log('')
+        console.log('Relevant medication data:')
+        // Only log the relevant fields for debugging
+        const relevantKeys = ['rxcui', 'name', 'safety', 'classification', 'conversion_values']
+        relevantKeys.forEach((key) => {
+          if (key in medication) {
+            console.log(`  ${key}:`, JSON.stringify((medication as Record<string, unknown>)[key], null, 2))
+          }
+        })
+        console.groupEnd()
       }
-      console.groupEnd()
 
       setResults((prev) =>
         new Map(prev).set(test.id, {
@@ -1352,8 +1855,7 @@ export const TestPanel = observer(function TestPanel() {
       )
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Unknown error'
-      console.error('❌ ERROR:', errorMsg)
-      console.groupEnd()
+      console.error(`❌ ERROR: ${test.name} (${test.rxcui}) - ${errorMsg}`)
       setResults((prev) =>
         new Map(prev).set(test.id, {
           status: 'error',
@@ -1419,6 +1921,8 @@ export const TestPanel = observer(function TestPanel() {
     await runAllTests(pricingTests, setPricingResults, setIsRunningPricing, 'Pricing Stats')
     await runAllTests(rxnormTests, setRxnormResults, setIsRunningRxnorm, 'RxNorm Info')
     await runAllTests(atcTests, setAtcResults, setIsRunningAtc, 'ATC Codes')
+    await runAllTests(safetyTests, setSafetyResults, setIsRunningSafety, 'Safety & Black Box Warnings')
+    await runAllTests(pimTests, setPimResults, setIsRunningPim, 'PIM (Beers Criteria)')
     
     // Calculate final totals
     const allFinalResults = [
@@ -1426,6 +1930,8 @@ export const TestPanel = observer(function TestPanel() {
       ...Array.from(pricingResults.values()),
       ...Array.from(rxnormResults.values()),
       ...Array.from(atcResults.values()),
+      ...Array.from(safetyResults.values()),
+      ...Array.from(pimResults.values()),
     ]
     const totalPassed = allFinalResults.filter((r) => r.status === 'passed').length
     const totalFailed = allFinalResults.filter((r) => r.status === 'failed' || r.status === 'error').length
@@ -1540,8 +2046,10 @@ export const TestPanel = observer(function TestPanel() {
     ...Array.from(pricingResults.values()),
     ...Array.from(rxnormResults.values()),
     ...Array.from(atcResults.values()),
+    ...Array.from(safetyResults.values()),
+    ...Array.from(pimResults.values()),
   ]
-  const totalTests = conversionTests.length + pricingTests.length + rxnormTests.length + atcTests.length
+  const totalTests = conversionTests.length + pricingTests.length + rxnormTests.length + atcTests.length + safetyTests.length + pimTests.length
   const passedTests = allResults.filter((r) => r.status === 'passed').length
   const failedTests = allResults.filter((r) => r.status === 'failed').length
   const runTests = passedTests + failedTests
@@ -1576,7 +2084,7 @@ export const TestPanel = observer(function TestPanel() {
             </div>
             <button
               onClick={runAllSections}
-              disabled={isRunningAll || isRunningConversion || isRunningPricing || isRunningRxnorm || isRunningAtc}
+              disabled={isRunningAll || isRunningConversion || isRunningPricing || isRunningRxnorm || isRunningAtc || isRunningSafety || isRunningPim}
               className="ml-4 px-6 py-3 bg-primary-500 text-white rounded-xl text-sm font-semibold hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm flex items-center gap-2"
             >
               {isRunningAll ? (
@@ -1676,6 +2184,36 @@ export const TestPanel = observer(function TestPanel() {
         onRunTest={(test) => runTest(test, setAtcResults)}
         onRunAll={() => runAllTests(atcTests, setAtcResults, setIsRunningAtc, 'ATC Codes')}
         isRunningAll={isRunningAtc}
+      />
+
+      <TestSection
+        title="Safety & Black Box Warnings"
+        icon={
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        }
+        description="Validate black box warnings, controlled substance status, and DEA schedule"
+        tests={safetyTests}
+        results={safetyResults}
+        onRunTest={(test) => runTest(test, setSafetyResults)}
+        onRunAll={() => runAllTests(safetyTests, setSafetyResults, setIsRunningSafety, 'Safety & Black Box Warnings')}
+        isRunningAll={isRunningSafety}
+      />
+
+      <TestSection
+        title="PIM (Beers Criteria)"
+        icon={
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        }
+        description="Validate Potentially Inappropriate Medications for elderly patients (AGS Beers Criteria)"
+        tests={pimTests}
+        results={pimResults}
+        onRunTest={(test) => runTest(test, setPimResults)}
+        onRunAll={() => runAllTests(pimTests, setPimResults, setIsRunningPim, 'PIM (Beers Criteria)')}
+        isRunningAll={isRunningPim}
       />
 
       {/* Custom Tests Section */}

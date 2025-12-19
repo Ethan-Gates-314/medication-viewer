@@ -21,6 +21,12 @@ export const MedicationCard = observer(function MedicationCard({
   const store = medicationViewerStore
   const isUnmatched = medication.rxcui.startsWith('UNMATCHED_')
   const isLiquid = medication.conversion_values.is_liquid
+  
+  // Safety flags
+  const safety = medication.safety
+  const hasBlackBoxWarning = safety?.has_black_box_warning ?? false
+  const isControlled = safety?.is_controlled_substance ?? false
+  const isPim = safety?.is_pim ?? false
 
   // Format price
   const formatPrice = (price: number) => {
@@ -46,8 +52,48 @@ export const MedicationCard = observer(function MedicationCard({
         bg-white rounded-xl border border-surface-200 p-4
         cursor-pointer hover:border-primary-300
         ${isUnmatched ? 'border-l-4 border-l-warning-400' : ''}
+        ${hasBlackBoxWarning ? 'ring-2 ring-danger-200' : ''}
       `}
     >
+      {/* Safety Indicators Banner */}
+      {(hasBlackBoxWarning || isControlled || isPim) && (
+        <div className="flex items-center gap-2 mb-3 pb-2 border-b border-surface-100">
+          {hasBlackBoxWarning && (
+            <span 
+              className="flex items-center gap-1 px-2 py-0.5 bg-danger-100 text-danger-700 rounded text-[10px] font-semibold"
+              title="FDA Black Box Warning"
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              BBW
+            </span>
+          )}
+          {isControlled && (
+            <span 
+              className="flex items-center gap-1 px-2 py-0.5 bg-warning-100 text-warning-700 rounded text-[10px] font-semibold"
+              title={`Controlled Substance ${safety?.controlled_substance_schedule ?? ''}`}
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+              </svg>
+              {safety?.controlled_substance_schedule ?? 'CS'}
+            </span>
+          )}
+          {isPim && (
+            <span 
+              className="flex items-center gap-1 px-2 py-0.5 bg-purple-100 text-purple-700 rounded text-[10px] font-semibold"
+              title="Potentially Inappropriate Medication (Beers Criteria)"
+            >
+              <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              PIM
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-3">
         <div className="flex-1 min-w-0">

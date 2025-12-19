@@ -13,6 +13,7 @@ import {
   MedicationGrid,
   MedicationDetailModal,
   TestPanel,
+  ResolverTestPanel,
 } from './components'
 import './App.css'
 
@@ -26,7 +27,7 @@ const App = observer(function App() {
 
   return (
     <Layout>
-      {store.activeTab === 'database' ? (
+      {store.activeTab === 'database' && (
         <>
           <div className="space-y-6">
             {/* Stats Panel */}
@@ -42,9 +43,9 @@ const App = observer(function App() {
           {/* Detail Modal */}
           <MedicationDetailModal />
         </>
-      ) : (
-        <TestPanel />
       )}
+      {store.activeTab === 'tests' && <TestPanel />}
+      {store.activeTab === 'resolver' && <ResolverTestPanel />}
     </Layout>
   )
 })

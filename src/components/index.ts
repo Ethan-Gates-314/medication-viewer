@@ -11,4 +11,4 @@ export { MedicationDetailModal } from './MedicationDetailModal'
 export { DataSourceBadge } from './DataSourceBadge'
 export { JsonViewer } from './JsonViewer'
 export { TestPanel } from './TestPanel'
-
+export { ResolverTestPanel } from './ResolverTestPanel'

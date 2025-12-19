@@ -55,7 +55,7 @@ class MedicationViewerStore {
   isDetailModalOpen = false
   
   // Tab state
-  activeTab: 'database' | 'tests' = 'database'
+  activeTab: 'database' | 'tests' | 'resolver' = 'database'
 
   constructor() {
     makeAutoObservable(this)
@@ -487,7 +487,7 @@ class MedicationViewerStore {
   /**
    * Set active tab
    */
-  setActiveTab(tab: 'database' | 'tests'): void {
+  setActiveTab(tab: 'database' | 'tests' | 'resolver'): void {
     this.activeTab = tab
   }
 }
